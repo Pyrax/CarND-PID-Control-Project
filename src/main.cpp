@@ -33,8 +33,21 @@ string hasData(string s) {
 int main() {
   uWS::Hub h;
 
-  // PID pid{0.2, 0.0001, 3.0};
-  PID pid{0.2, 0.0001, 3.0, true};
+  // (P) First step:
+  // Manual tuning of proportional component which lead to
+  // those parameters:
+  // PID pid{0.1, 0.0, 0.0};
+
+  // (PD) Second step:
+  // Add derivative component and adjust it.
+  // PID pid{0.1, 0.0, 2.5};
+
+  // (PID) Third step:
+  // Adding an integral component and manually tuning it.
+  // PID pid{0.1, 0.0005, 2.5};
+
+  // Final tweaking of parameters:
+  PID pid{0.25, 0.0005, 3.0};
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                                  uWS::OpCode opCode) {
@@ -61,12 +74,13 @@ int main() {
           steer_value = pid.TotalError();
           
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
+          std::cout << "CTE: " << cte << " Steering Value: " << steer_value
                     << std::endl;
+          std::cout << "Best error: " << " with params: " << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = speed;
+          msgJson["throttle"] = 0.3;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);

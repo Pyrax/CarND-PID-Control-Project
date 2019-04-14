@@ -7,7 +7,7 @@ class PID {
    * Constructor
    * @param (Kp_, Ki_, Kd_) The initial PID coefficients
    */
-  PID(double Kp_, double Ki_, double Kd_, bool tune_parameters=false);
+  PID(double Kp_, double Ki_, double Kd_);
 
   /**
    * Destructor.
@@ -27,7 +27,6 @@ class PID {
   double TotalError();
 
  private:
-  bool tune_parameters;
 
   /**
    * PID Errors

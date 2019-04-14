@@ -1,8 +1,7 @@
 #include "PID.h"
 
-PID::PID(double Kp_, double Ki_, double Kd_, bool tune_parameters)
-    : tune_parameters(tune_parameters),
-      p_error(0.0), i_error(0.0), d_error(0.0),
+PID::PID(double Kp_, double Ki_, double Kd_)
+    : p_error(0.0), i_error(0.0), d_error(0.0),
       Kp(Kp_), Ki(Ki_), Kd(Kd_) {
 
 }
