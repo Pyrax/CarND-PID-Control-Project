@@ -5,19 +5,14 @@ class PID {
  public:
   /**
    * Constructor
+   * @param (Kp_, Ki_, Kd_) The initial PID coefficients
    */
-  PID();
+  PID(double Kp_, double Ki_, double Kd_, bool tune_parameters=false);
 
   /**
    * Destructor.
    */
   virtual ~PID();
-
-  /**
-   * Initialize PID.
-   * @param (Kp_, Ki_, Kd_) The initial PID coefficients
-   */
-  void Init(double Kp_, double Ki_, double Kd_);
 
   /**
    * Update the PID error variables given cross track error.
@@ -32,6 +27,8 @@ class PID {
   double TotalError();
 
  private:
+  bool tune_parameters;
+
   /**
    * PID Errors
    */
