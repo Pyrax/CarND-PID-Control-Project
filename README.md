@@ -3,6 +3,59 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Writeup
+
+In this project a PID Controller is used to control the steering angle of a car driving through a track in the 
+Udacity Term 2 simulator. 
+
+### Reflection
+
+The following describes the concept of the individual components of a PID controller in terms of impact on the car:
+1. P - Proportional component:  
+This component makes the car steer proportional to the so called "cross-track error" (CTE). The CTE in this case 
+determines how far the car is away from the center of the road. Thereas, a higher CTE leads to higher steering angles to 
+minimize error and get back to the center. If only a P-Controller is used the car will oscillate because it constantly 
+overshoots it desired direction.
+2. I - Integral component:  
+The integral component takes the sum of all previous errors which can be used to prevent bias in the system. If the car 
+keeps driving off to a specific side, the system might have a bias. Therefore, an integral component can help preventing 
+this. However, its factor must be set carefully. Otherwise, it leads to an extreme overshooting at the beginning driving 
+the car off track.
+3. D - Derivative component:  
+The derivative component is essentially a counter force of the proportional component. As the name implies it describes 
+the change rate of CTE. Hence, it prevents the car from oscillating too much by preventing the overshooting.
+
+In order to tune the hyper parameters for each component I manually tried out different values. 
+
+I started with a simple P-Controller and set the parameter P as high as possible without having too much oscillation so 
+that the car does not leave the road as long as possible. I ended up with `PID pid{0.1, 0.0, 0.0};` where the 
+parameter Kp is 0.1.
+
+Then I extended this controller with a D-Component and only tuned the parameter of D. I found that a value of 2.5 is 
+enough to prevent most overshooting: `PID pid{0.1, 0.0, 2.5};`.
+
+Afterwards, I have completed the PID controller by adding the integral part. As mentioned above its parameter must be 
+carefully tuned otherwise it will completely steer off the track. So, I chose a small value of 0.0005.
+
+From this point on the PID-Controller with all his parameters was set `PID pid{0.1, 0.0005, 2.5};` and able to drive 
+around the track without leaving road. However, I was not satisfied enough with the result because in the larger curves 
+the car almost hit the corners. So I evaluated the performance of different parameter values by taking the average CTE 
+over a specific time span. The following values show all improvements I got:
+
+Parameter set | Performance (average error - lower is better)
+------------------------------|--------------------------------------
+PID pid{0.1, 0.0005, 2.5};    | Average CTE: 0.458677 at 1028 values
+PID pid{0.2, 0.0005, 2.5};    | Average CTE: 0.286144 at 1026 values
+PID pid{0.25, 0.0005, 3.0};   | Average CTE: 0.258713 at 1028 values
+PID pid{0.3, 0.0005, 3.5};    | Average CTE: 0.249481 at 1028 values
+
+Finally, I ended up with `Kp = 0.3`, `Ki = 5e-4`, `Kd = 3.5`.
+
+With different approaches than manual tuning these values could probably be improved further. For example, the "Twiddle" 
+algorithm could take these values as starting point to then adjust them. However, in lack of time I will postpone this 
+for now.
+
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -36,63 +89,3 @@ Fellow students have put together a guide to Windows set-up for the project [her
 4. Run it: `./pid`. 
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
