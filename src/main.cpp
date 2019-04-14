@@ -44,10 +44,12 @@ int main() {
 
   // (PID) Third step:
   // Adding an integral component and manually tuning it.
-  // PID pid{0.1, 0.0005, 2.5};
+  // PID pid{0.1, 0.0005, 2.5}; -> Average CTE: 0.458677 at 1028 values
 
   // Final tweaking of parameters:
-  PID pid{0.25, 0.0005, 3.0};
+  // PID pid{0.2, 0.0005, 2.5}; -> Average CTE: 0.286144 at 1026 values
+  // PID pid{0.25, 0.0005, 3.0}; -> Average CTE: 0.258713 at 1028 values
+  PID pid{0.3, 0.0005, 3.5}; // -> Average CTE: 0.249481 at 1028 values
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                                  uWS::OpCode opCode) {
@@ -74,8 +76,9 @@ int main() {
           steer_value = pid.TotalError();
           
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value
-                    << std::endl;
+          std::cout << "---" << std::endl
+                    << "CTE: " << cte << " Steering Value: " << steer_value << std::endl
+                    << "Average CTE: " << pid.AverageError() << " at " << pid.getCount() << " values" << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;

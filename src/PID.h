@@ -26,6 +26,17 @@ class PID {
    */
   double TotalError();
 
+  /**
+   * Calculate the average cross track error.
+   * @output The average CTE
+   */
+  double AverageError();
+
+  /**
+   * @output Number of values captured by the controller.
+   */
+  double getCount();
+
  private:
 
   /**
@@ -41,6 +52,12 @@ class PID {
   double Kp;
   double Ki;
   double Kd;
+
+  /**
+   * Variables for evaluating average error
+   */
+  double abs_error; // takes the absolute value of CTE (unlike i_error)
+  int count;
 };
 
 #endif  // PID_H
