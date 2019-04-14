@@ -76,7 +76,6 @@ int main() {
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value
                     << std::endl;
-          std::cout << "Best error: " << " with params: " << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
